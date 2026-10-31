@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chris Wangeci | Senior Software & AI Solutions Engineer (Wolfie3D)</title>
+    <meta name="description" content="Portfolio of Chris Wangeci (Wolfie3D) - Senior Software & AI Solutions Engineer specializing in Laravel, Python, AI Agents, Web Scraping & DevOps.">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#0B0F17',
+                            card: '#111827',
+                            border: '#1F2937',
+                            cyan: '#06B6D4',
+                            emerald: '#10B981',
+                            violet: '#8B5CF6',
+                            accent: '#3B82F6'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        body {
+            background-color: #0B0F17;
+            color: #E5E7EB;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Glassmorphism Styles */
+        .glass-card {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(6, 182, 212, 0.3);
+            box-shadow: 0 10px 30px -10px rgba(6, 182, 212, 0.15);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0F17;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1F2937;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #06B6D4;
+        }
+
+        /* Neon Glow Effects */
+        .glow-cyan {
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+        }
+        .glow-emerald {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #06B6D4 0%, #3B82F6 50%, #8B5CF6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="selection:bg-cyan-500 selection:text-black min-h-screen flex flex-col justify-between">
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="glass-card px-4 py-3 rounded-xl border border-cyan-500/50 flex items-center gap-3 shadow-2xl bg-slate-900/90 text-sm font-mono text-cyan-400">
+            <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+            <span id="toast-message">Copied to clipboard!</span>
+        </div>
+    </div>
+
+    <!-- Terminal Modal -->
+    <div id="terminal-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-card w-full max-w-3xl rounded-xl border border-cyan-500/30 overflow-hidden shadow-2xl flex flex-col h-[500px]">
+            <!-- Terminal Header -->
+            <div class="bg-gray-900/90 px-4 py-3 border-b border-gray-800 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 rounded-full bg-red-500 inline-block cursor-pointer" onclick="toggleTerminal()"></span>
+                    <span class="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span>
+                    <span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
+                    <span class="text-xs font-mono text-gray-400 ml-2">wolfie3d@dev-environment:~</span>
+                </div>
+                <button onclick="toggleTerminal()" class="text-gray-400 hover:text-white transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <!-- Terminal Body -->
+            <div id="terminal-body" class="p-4 font-mono text-xs md:text-sm text-gray-300 overflow-y-auto flex-1 space-y-2">
+                <p class="text-cyan-400">Welcome to Chris Wangeci (Wolfie3D) Interactive CLI [Version 2.4.0]</p>
+                <p class="text-gray-400">Type <span class="text-yellow-400 font-bold">'help'</span> to list available commands or <span class="text-yellow-400 font-bold">'clear'</span> to clean terminal screen.</p>
+                <div id="terminal-history" class="space-y-2"></div>
+            </div>
+            <!-- Terminal Input -->
+            <div class="p-3 bg-gray-900/90 border-t border-gray-800 flex items-center gap-2">
+                <span class="text-emerald-400 font-mono font-bold">$</span>
+                <input type="text" id="terminal-input" class="bg-transparent border-none outline-none font-mono text-sm text-cyan-300 w-full focus:ring-0" placeholder="Type a command (e.g. whoami, projects, cv, contact)..." autofocus>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <header class="sticky top-0 z-40 w-full glass-card border-b border-gray-800/80 bg-brand-dark/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center font-mono font-bold text-cyan-400 group-hover:border-cyan-400 group-hover:bg-cyan-500/20 transition-all">
+                    &lt;W/&gt;
+                </div>
+                <div>
+                    <span class="font-bold text-white tracking-wide text-base block">Chris Wangeci</span>
+                    <span class="text-xs font-mono text-cyan-400 block">Senior AI & Web Engineer</span>
+                </div>
+            </a>
+
+            <!-- Status & Action Badges -->
+            <div class="hidden lg:flex items-center gap-6 text-sm">
+                <div class="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full text-emerald-400 text-xs font-mono">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span>🟢 Open for High-Impact Roles</span>
+                </div>
+                <div class="text-xs font-mono text-gray-400">
+                    <i class="fa-solid fa-clock text-cyan-400 mr-1"></i> Lower Kabete, KE (UTC+3)
+                </div>
+            </div>
+
+            <!-- Navigation Links & CLI Trigger -->
+            <div class="flex items-center gap-3">
+                <button onclick="toggleTerminal()" class="hidden sm:flex items-center gap-2 bg-gray-800/80 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-lg border border-gray-700 text-xs font-mono transition-all hover:border-cyan-500/50">
+                    <i class="fa-solid fa-terminal text-cyan-400"></i>
+                    <span>Terminal</span>
+                    <span class="bg-gray-900 text-gray-400 px-1.5 py-0.5 rounded border border-gray-800 text-[10px]">Ctrl+K</span>
+                </button>
+                <a href="#contact" class="bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-4 py-1.5 rounded-lg text-xs font-mono transition-all shadow-lg shadow-cyan-500/20">
+                    Hire Me
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
+
+        <!-- Hero Section -->
+        <section class="grid lg:grid-cols-12 gap-8 items-center pt-4">
+            <div class="lg:col-span-8 space-y-6">
+                <!-- Status Badge (Mobile) -->
+                <div class="inline-flex lg:hidden items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full text-emerald-400 text-xs font-mono">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>Open for High-Impact Contracts</span>
+                </div>
+
+                <div class="space-y-2">
+                    <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+                        Architecting Scalable Web Platforms, <span class="text-gradient">Autonomous AI Agents</span> & Automation Engines.
+                    </h1>
+                    <p class="text-gray-400 text-base sm:text-lg max-w-2xl leading-relaxed pt-2">
+                        Senior Software & AI Solutions Engineer with 5+ years of experience engineering production web systems (<span class="text-cyan-400 font-mono">Laravel 12, FastAPI, Django</span>), LLM integrations (<span class="text-purple-400 font-mono">OpenAI, Claude API, RAG</span>), and high-throughput web scraping automation.
+                    </p>
+                </div>
+
+                <!-- CTAs & Socials -->
+                <div class="flex flex-wrap items-center gap-4 pt-2">
+                    <a href="#contact" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-bold px-6 py-3 rounded-xl text-sm font-mono flex items-center gap-2 transition-all shadow-lg shadow-cyan-500/20">
+                        <i class="fa-solid fa-paper-plane"></i> Initiate Project / Contract
+                    </a>
+                    <button onclick="copyEmail()" class="glass-card hover:bg-gray-800 text-gray-200 px-5 py-3 rounded-xl text-sm font-mono border border-gray-700 flex items-center gap-2 transition-all">
+                        <i class="fa-regular fa-copy text-cyan-400"></i>
+                        <span>kwangechi3@gmail.com</span>
+                    </button>
+                    <a href="https://github.com/Wolfie3D" target="_blank" rel="noopener" class="glass-card hover:bg-gray-800 text-gray-300 p-3 rounded-xl border border-gray-700 transition-all">
+                        <i class="fa-brands fa-github text-lg"></i>
+                    </a>
+                    <a href="https://linkedin.com/in/chris-kamau" target="_blank" rel="noopener" class="glass-card hover:bg-gray-800 text-gray-300 p-3 rounded-xl border border-gray-700 transition-all">
+                        <i class="fa-brands fa-linkedin text-lg"></i>
+                    </a>
+                </div>
+
+                <!-- Live Metrics Bar -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-gray-800/80">
+                    <div class="glass-card p-4 rounded-xl border border-gray-800">
+                        <span class="block text-2xl font-extrabold text-cyan-400 font-mono">4,797+</span>
+                        <span class="text-xs text-gray-400 uppercase tracking-wider font-mono">GitHub Commits</span>
+                    </div>
+                    <div class="glass-card p-4 rounded-xl border border-gray-800">
+                        <span class="block text-2xl font-extrabold text-emerald-400 font-mono">114+</span>
+                        <span class="text-xs text-gray-400 uppercase tracking-wider font-mono">Repositories</span>
+                    </div>
+                    <div class="glass-card p-4 rounded-xl border border-gray-800">
+                        <span class="block text-2xl font-extrabold text-purple-400 font-mono">4 Certs</span>
+                        <span class="text-xs text-gray-400 uppercase tracking-wider font-mono">AWS, Meta, Google</span>
+                    </div>
+                    <div class="glass-card p-4 rounded-xl border border-gray-800">
+                        <span class="block text-2xl font-extrabold text-blue-400 font-mono">5+ Yrs</span>
+                        <span class="text-xs text-gray-400 uppercase tracking-wider font-mono">Engineering Exp</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Summary Card -->
+            <div class="lg:col-span-4">
+                <div class="glass-card p-6 rounded-2xl border border-gray-800 space-y-6 relative overflow-hidden">
+                    <div class="absolute -top-10 -right-10 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-500 to-purple-600 p-0.5 shadow-lg">
+                            <div class="w-full h-full bg-gray-900 rounded-[14px] flex items-center justify-center font-mono text-xl font-bold text-cyan-400">
+                                W3D
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-white">Chris Wangeci</h3>
+                            <p class="text-xs font-mono text-cyan-400">@Wolfie3D</p>
+                            <span class="inline-block text-[11px] font-mono text-gray-400 bg-gray-800/80 px-2 py-0.5 rounded border border-gray-700/50 mt-1">
+                                <i class="fa-solid fa-location-dot text-red-400 mr-1"></i> Nairobi, KE
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 font-mono text-xs text-gray-300 border-t border-b border-gray-800 py-4">
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Role:</span>
+                            <span class="text-gray-200">Senior AI & Full-Stack</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Hourly Rate:</span>
+                            <span class="text-emerald-400 font-bold">$25.00 / hr</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Response Time:</span>
+                            <span class="text-cyan-400">0 - 4 Hours</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">ID Verification:</span>
+                            <span class="text-emerald-400"><i class="fa-solid fa-shield-halved mr-1"></i> Verified</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <span class="text-xs font-mono text-gray-400 block uppercase tracking-wider">Top Skills</span>
+                        <div class="flex flex-wrap gap-1.5">
+                            <span class="bg-gray-800 text-cyan-300 border border-cyan-500/30 text-[11px] font-mono px-2 py-1 rounded">PHP / Laravel</span>
+                            <span class="bg-gray-800 text-cyan-300 border border-cyan-500/30 text-[11px] font-mono px-2 py-1 rounded">Python / FastAPI</span>
+                            <span class="bg-gray-800 text-purple-300 border border-purple-500/30 text-[11px] font-mono px-2 py-1 rounded">LLM / OpenAI API</span>
+                            <span class="bg-gray-800 text-emerald-300 border border-emerald-500/30 text-[11px] font-mono px-2 py-1 rounded">Playwright / Scraping</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Core Technical Pillars -->
+        <section class="space-y-6">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-gray-800 pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-cubes text-cyan-400"></i> Core Technical Pillars
+                    </h2>
+                    <p class="text-xs font-mono text-gray-400 mt-1">Engineered architectures and specialized technical solutions.</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Pillar 1 -->
+                <div class="glass-card p-6 rounded-2xl border border-gray-800 hover:border-cyan-500/50 transition-all space-y-4 group">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-xl group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-purple-400 transition-colors">AI & LLM Architecture</h3>
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        Custom RAG systems, multi-provider LLM integrations (OpenAI, Claude API), autonomous AI agents, prompt optimization, and custom knowledge bots.
+                    </p>
+                    <div class="flex flex-wrap gap-1 font-mono text-[10px] text-purple-300">
+                        <span class="bg-purple-950/40 px-2 py-0.5 rounded border border-purple-800/40">LangChain</span>
+                        <span class="bg-purple-950/40 px-2 py-0.5 rounded border border-purple-800/40">RAG</span>
+                        <span class="bg-purple-950/40 px-2 py-0.5 rounded border border-purple-800/40">OpenAI API</span>
+                    </div>
+                </div>
+
+                <!-- Pillar 2 -->
+                <div class="glass-card p-6 rounded-2xl border border-gray-800 hover:border-cyan-500/50 transition-all space-y-4 group">
+                    <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-xl group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-cyan-400 transition-colors">Scalable Web & SaaS</h3>
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        High-availability backends with Laravel 12 & FastAPI/Django. Multi-tenant SaaS architectures, RESTful API design, and asynchronous job queuing.
+                    </p>
+                    <div class="flex flex-wrap gap-1 font-mono text-[10px] text-cyan-300">
+                        <span class="bg-cyan-950/40 px-2 py-0.5 rounded border border-cyan-800/40">PHP/Laravel</span>
+                        <span class="bg-cyan-950/40 px-2 py-0.5 rounded border border-cyan-800/40">FastAPI</span>
+                        <span class="bg-cyan-950/40 px-2 py-0.5 rounded border border-cyan-800/40">PostgreSQL</span>
+                    </div>
+                </div>
+
+                <!-- Pillar 3 -->
+                <div class="glass-card p-6 rounded-2xl border border-gray-800 hover:border-cyan-500/50 transition-all space-y-4 group">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xl group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-spider"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors">Data Scraping & Anti-Bot</h3>
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        High-volume lead extraction pipelines utilizing Playwright, Selenium, and Scrapy. Anti-bot bypass (proxy rotation, fingerprint spoofing).
+                    </p>
+                    <div class="flex flex-wrap gap-1 font-mono text-[10px] text-emerald-300">
+                        <span class="bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-800/40">Playwright</span>
+                        <span class="bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-800/40">Selenium</span>
+                        <span class="bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-800/40">Scrapy</span>
+                    </div>
+                </div>
+
+                <!-- Pillar 4 -->
+                <div class="glass-card p-6 rounded-2xl border border-gray-800 hover:border-cyan-500/50 transition-all space-y-4 group">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-xl group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-network-wired"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-blue-400 transition-colors">DevOps & Infrastructure</h3>
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        Dockerized environments, CI/CD with GitHub Actions, self-hosted VPN platforms (WireGuard, AmneziaWG), Linux server admin, AWS Cloud.
+                    </p>
+                    <div class="flex flex-wrap gap-1 font-mono text-[10px] text-blue-300">
+                        <span class="bg-blue-950/40 px-2 py-0.5 rounded border border-blue-800/40">AWS</span>
+                        <span class="bg-blue-950/40 px-2 py-0.5 rounded border border-blue-800/40">Docker</span>
+                        <span class="bg-blue-950/40 px-2 py-0.5 rounded border border-blue-800/40">WireGuard</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Projects Showcase (Interactive Filter) -->
+        <section id="projects" class="space-y-6">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-gray-800 pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-diagram-project text-cyan-400"></i> Featured Production Projects
+                    </h2>
+                    <p class="text-xs font-mono text-gray-400 mt-1">Filtering live repositories and client deliverables.</p>
+                </div>
+
+                <!-- Project Filters -->
+                <div class="flex flex-wrap gap-2 text-xs font-mono" id="project-filters">
+                    <button onclick="filterProjects('all')" class="project-filter-btn active bg-cyan-500 text-black font-bold px-3 py-1.5 rounded-lg transition-all">All</button>
+                    <button onclick="filterProjects('ai')" class="project-filter-btn bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-lg border border-gray-700 transition-all">AI / LLM</button>
+                    <button onclick="filterProjects('laravel')" class="project-filter-btn bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-lg border border-gray-700 transition-all">Laravel SaaS</button>
+                    <button onclick="filterProjects('python')" class="project-filter-btn bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-lg border border-gray-700 transition-all">Python & Scraping</button>
+                </div>
+            </div>
+
+            <!-- Projects Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="projects-container">
+
+                <!-- Project 1 -->
+                <div class="project-card glass-card rounded-2xl border border-gray-800 overflow-hidden flex flex-col justify-between p-6 space-y-4 hover:border-cyan-500/50 transition-all" data-category="laravel ai">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-800/60 px-2 py-0.5 rounded">Laravel 12 / PHP</span>
+                            <span class="text-xs text-gray-400 font-mono"><i class="fa-solid fa-star text-yellow-500 mr-1"></i> Featured</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white hover:text-cyan-400 transition-colors">Laravel AI Task Manager & Multi-Provider LLM</h3>
+                        <p class="text-xs text-gray-400 leading-relaxed">
+                            ClickUp-style Kanban task manager featuring productivity routines and unified AI chat supporting OpenAI, Claude, and Gemini providers.
+                        </p>
+                    </div>
+                    <div class="space-y-4 pt-4 border-t border-gray-800/80">
+                        <div class="flex flex-wrap gap-1 font-mono text-[10px] text-gray-300">
+                            <span class="bg-gray-800/80 px-2 py-0.5 rounded">Blade</span>
+                            <span class="bg-gray-800/80 px-2 py-0.5 rounded">OpenAI API</span>
+                            <span class="bg-gray-800/80 px-2 py-0.5 rounded">Claude API</span>
+                        </div>
+                        <a href="https://github.com/Wolfie3D/laravel-ai-task-manager" target="_blank" rel="noopener" class="text-xs font-mono text-cyan-400 hover:text-cyan-300 flex items-center gap-2">
+                            <span>View Source Code</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="project-card glass-card rounded-2xl border border-gray-800 overflow-hidden flex flex-col justify-between p-6 space-y-4 hover:border-cyan-500/50 transition-all" data-category="python">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-mono text-blue-400 bg-blue-950/60 border border-blue-800/60 px-2 py-0.5 rounded">Python / DevOps</span>
+                            <span class="text-xs text-gray-400 font-mono"><i class="fa-solid fa-shield-halved text-cyan-400 mr-1"></i> Infrastructure</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white hover:text-cyan-400 transition-colors">VPN Orchestration Platform</h3>
+                        <p class="text-xs text-gray-400 leading-relaxed">
+                            Self-hosted multi-protocol VPN admin platform supporting WireGuard, AmneziaWG, and Hysteria2 across multi-server network deployments.
+                        </p>
+                    </div>
+                    <div class="space-y-4 pt-4 border-t border-gray-800/80">
+                        <div class="flex flex-wrap gap-1 font-mono text-[10px] text-gray-300">
+                            <span class="bg-gray-800/80 px-2 py-0.5 rounded">WireGuard</span>
+                            <span class="bg-gray-800/80 px-2 py-0.5 rounded">AmneziaWG</span>
+                            <span class="bg-gray-800/80 px-2 py-0.5 rounded">Python CLI</span>
+                        </div>
+                        <a href="https://github.com/Wolfie3D/vpn-orchestration-platform" target="_blank" rel="noopener" class="text-xs font-mono text-cyan-400 hover:text-cyan-300 flex items-center gap-2">
+                            <span>View Source Code</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="project-card glass-card rounded-2xl border border-gray-800 overflow-hidden flex flex-col justify-between p-6 space-y-4 hover:border-cyan-500/50 transition-all" data-category="python">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-2 py-0.5 rounded">Python / Scraping</span>
+                            <span class="text-xs text-gray-400 font-mono"><i class="fa-solid fa-bolt text-yellow-400 mr-1"></i> Lead Gen</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white hover:text-cyan-400 transition-colors">Python Web Scraping & Lead Automation</h3>
+                        <p class="text-xs text-gray-400 leading-relaxed">
+                            High-volume automated web extraction suite with anti-bot bypass, proxy rotation, and structured JSON/SQL exports.
+                        </p>
+                    </div>
+                    <div class="space-y-4 pt-4 border-t border-gray-800/80">
+                        <div class="flex flex-wrap gap-1 font-mono text-[10px] text-gray-300">
+                            <span class="bg-gray-800/80 px-2 py-0.5 rounded">Playwright</span>
+                            <span class="bg-gray-800/80 px-2 py-0.5 rounded">Selenium</span>
+                            <span class="bg-gray-800/80 px-2 py-0.5 rounded">Scrapy</span>
+                        </div>
+                        <a href="https://github.com/Wolfie3D/python-web-scraping-automation" target="_blank" rel="noopener" class="text-xs font-mono text-cyan-400 hover:text-cyan-300 flex items-center gap-2">
+                            <span>View Source Code</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 4 -->
+                <div class="project-card glass-card rounded-2xl border border-gray-800 overflow-hidden flex flex-col justify-between p-6 space-y-4 hover:border-cyan-500/50 transition-all" data-category="laravel">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-800/60 px-2 py-0.5 rounded">Laravel SaaS</span>
+                            <span class="text-xs text-gray-400 font-mono">Enterprise</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white hover:text-cyan-400 transition-colors">Enterprise CRM System</h3>
+                        <p class="text-xs text-gray-400 leading-relaxed">
+                            Full lifecycle customer management app featuring automated lead routing, pipeline analytics, and custom CSV/PDF report exports.
+                        </p>
+                    </div>
+                    <div class="space-y-4 pt-4 border-t border-gray-800/80">
+                        <div class="flex flex-wrap gap-1 font-mono text-[10px] text-gray-300">
+                            <span class="bg-gray-800/80 px-2 py-0.5 rounded">Laravel</span>
+                            <span class="bg-gray-800/80 px-2 py-0.5 rounded">MySQL</span>
+                            <span class="bg-gray-800/80 px-2 py-0.5 rounded">Tailwind</span>
+                        </div>
+                        <a href="https://github.com/Wolfie3D/Customer-Relationship-Management-System" target="_blank" rel="noopener" class="text-xs font-mono text-cyan-400 hover:text-cyan-300 flex items-center gap-2">
+                            <span>View Source Code</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 5 -->
+                <div class="project-card glass-card rounded-2xl border border-gray-800 overflow-hidden flex flex-col justify-between p-6 space-y-4 hover:border-cyan-500/50 transition-all" data-category="laravel">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-mono text-purple-400 bg-purple-950/60 border border-purple-800/60 px-2 py-0.5 rounded">Full-Stack SaaS</span>
+                            <span class="text-xs text-gray-400 font-mono">Collaboration</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white hover:text-cyan-400 transition-colors">Project Management App</h3>
+                        <p class="text-xs text-gray-400 leading-relaxed">
+                            SaaS platform featuring workspace collaboration, milestone tracking, fine-grained role-based access control (RBAC), and team metrics.
+                        </p>
+                    </div>
+                    <div class="space-y-4 pt-4 border-t border-gray-800/80">
+                        <div class="flex flex-wrap gap-1 font-mono text-[10px] text-gray-300">
+                            <span class="bg-gray-800/80 px-2 py-0.5 rounded">JavaScript</span>
+                            <span class="bg-gray-800/80 px-2 py-0.5 rounded">REST APIs</span>
+                            <span class="bg-gray-800/80 px-2 py-0.5 rounded">PHP</span>
+                        </div>
+                        <a href="https://github.com/Wolfie3D/Project-Management-App" target="_blank" rel="noopener" class="text-xs font-mono text-cyan-400 hover:text-cyan-300 flex items-center gap-2">
+                            <span>View Source Code</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 6 -->
+                <div class="project-card glass-card rounded-2xl border border-gray-800 overflow-hidden flex flex-col justify-between p-6 space-y-4 hover:border-cyan-500/50 transition-all" data-category="laravel python">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-2 py-0.5 rounded">Laravel & Python</span>
+                            <span class="text-xs text-gray-400 font-mono">Analytics</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white hover:text-cyan-400 transition-colors">Multi-Tenant Benchmarking SaaS</h3>
+                        <p class="text-xs text-gray-400 leading-relaxed">
+                            Data analytics engine comparing multi-tenant performance metrics, automated pricing models, and system throughput.
+                        </p>
+                    </div>
+                    <div class="space-y-4 pt-4 border-t border-gray-800/80">
+                        <div class="flex flex-wrap gap-1 font-mono text-[10px] text-gray-300">
+                            <span class="bg-gray-800/80 px-2 py-0.5 rounded">Laravel</span>
+                            <span class="bg-gray-800/80 px-2 py-0.5 rounded">Python Engine</span>
+                            <span class="bg-gray-800/80 px-2 py-0.5 rounded">Redis</span>
+                        </div>
+                        <a href="https://github.com/Wolfie3D" target="_blank" rel="noopener" class="text-xs font-mono text-cyan-400 hover:text-cyan-300 flex items-center gap-2">
+                            <span>View Github Repos</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Professional Work Experience Timeline -->
+        <section class="space-y-6">
+            <div class="border-b border-gray-800 pb-4">
+                <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-briefcase text-cyan-400"></i> Engineering Experience
+                </h2>
+                <p class="text-xs font-mono text-gray-400 mt-1">Track record across healthcare tech, enterprise fintech, and SaaS platforms.</p>
+            </div>
+
+            <div class="space-y-6 relative before:absolute before:inset-0 before:left-3 md:before:left-1/2 before:-translate-x-px before:h-full before:w-0.5 before:bg-gradient-to-b before:from-cyan-500 before:via-purple-500 before:to-gray-800">
+
+                <!-- Experience Item 1 -->
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-7 h-7 rounded-full border border-cyan-400 bg-gray-900 text-cyan-400 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 text-xs font-mono">
+                        01
+                    </div>
+                    <div class="w-[calc(100%-2.5rem)] md:w-[calc(50%-2rem)] glass-card p-6 rounded-2xl border border-gray-800 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-mono text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/50">Feb 2025 – Present</span>
+                            <span class="text-xs font-mono text-gray-400">Torrance, CA & Remote</span>
+                        </div>
+                        <h3 class="text-base font-bold text-white">Senior Software & AI Solutions Engineer</h3>
+                        <h4 class="text-xs font-mono text-gray-300">Express Imaging Services</h4>
+                        <ul class="text-xs text-gray-400 space-y-1.5 list-disc list-inside">
+                            <li>Architecting multi-tenant web applications & HIPAA-compliant healthcare data microservices with Laravel & Python (Django/FastAPI).</li>
+                            <li>Designing autonomous AI agent workflows and custom RAG architectures using OpenAI and Claude API prompt pipelines.</li>
+                            <li>Slashed API response latency by over 40% across high-volume SaaS modules through database optimization & Redis/Celery background workers.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Experience Item 2 -->
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-7 h-7 rounded-full border border-purple-400 bg-gray-900 text-purple-400 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 text-xs font-mono">
+                        02
+                    </div>
+                    <div class="w-[calc(100%-2.5rem)] md:w-[calc(50%-2rem)] glass-card p-6 rounded-2xl border border-gray-800 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-mono text-purple-400 bg-purple-950/60 px-2 py-0.5 rounded border border-purple-800/50">Nov 2024 – Dec 2024</span>
+                            <span class="text-xs font-mono text-gray-400">Nairobi, KE</span>
+                        </div>
+                        <h3 class="text-base font-bold text-white">Software Development Consultant (Fintech & AI)</h3>
+                        <h4 class="text-xs font-mono text-gray-300">Interswitch East Africa</h4>
+                        <ul class="text-xs text-gray-400 space-y-1.5 list-disc list-inside">
+                            <li>Interfaced with enterprise core banking systems and payment switching engines built on legacy Java & C# backends.</li>
+                            <li>Built web frontends with React & Kotlin integrations for smooth data serialization across payment dashboards.</li>
+                            <li>Engineered anti-bot bypass scrapers in Python (Playwright, Scrapy) processing millions of data records.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Experience Item 3 -->
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-7 h-7 rounded-full border border-emerald-400 bg-gray-900 text-emerald-400 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 text-xs font-mono">
+                        03
+                    </div>
+                    <div class="w-[calc(100%-2.5rem)] md:w-[calc(50%-2rem)] glass-card p-6 rounded-2xl border border-gray-800 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/50">Jan 2024 – Nov 2024</span>
+                            <span class="text-xs font-mono text-gray-400">Nairobi, KE</span>
+                        </div>
+                        <h3 class="text-base font-bold text-white">Software Engineer</h3>
+                        <h4 class="text-xs font-mono text-gray-300">Leysco Ltd</h4>
+                        <ul class="text-xs text-gray-400 space-y-1.5 list-disc list-inside">
+                            <li>Engineered enterprise Human Resource Management System (HRMS) modules using Laravel and Vue.js.</li>
+                            <li>Designed goal tracking & performance review modules for corporate HR management.</li>
+                            <li>Automated local tax compliance logic and statutory deduction calculations.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Experience Item 4 -->
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-7 h-7 rounded-full border border-blue-400 bg-gray-900 text-blue-400 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 text-xs font-mono">
+                        04
+                    </div>
+                    <div class="w-[calc(100%-2.5rem)] md:w-[calc(50%-2rem)] glass-card p-6 rounded-2xl border border-gray-800 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-mono text-blue-400 bg-blue-950/60 px-2 py-0.5 rounded border border-blue-800/50">Apr 2021 – Dec 2023</span>
+                            <span class="text-xs font-mono text-gray-400">Paris, France (Remote)</span>
+                        </div>
+                        <h3 class="text-base font-bold text-white">Full-Stack & ML Engineer</h3>
+                        <h4 class="text-xs font-mono text-gray-300">Nepsate Tech Ltd</h4>
+                        <ul class="text-xs text-gray-400 space-y-1.5 list-disc list-inside">
+                            <li>Architected full-stack platforms with Laravel, Django/Flask, and Vue.js for business automation.</li>
+                            <li>Developed predictive ML models in Python (Scikit-learn, TensorFlow) for inventory demand forecasting.</li>
+                            <li>Reduced post-launch bug tickets by 35% using automated PHPUnit & PyTest testing suites.</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Verified Certifications Matrix -->
+        <section class="space-y-6">
+            <div class="border-b border-gray-800 pb-4">
+                <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-certificate text-cyan-400"></i> Verified Professional Certifications
+                </h2>
+                <p class="text-xs font-mono text-gray-400 mt-1">Industry-recognized credentials in AI, Cloud Architecture, and Backend Engineering.</p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                <!-- Cert 1 -->
+                <div class="glass-card p-5 rounded-2xl border border-gray-800 flex flex-col justify-between space-y-4 hover:border-purple-500/50 transition-all">
+                    <div class="space-y-2">
+                        <div class="w-10 h-10 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 font-bold">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <h3 class="text-sm font-bold text-white">Generative AI for Developers & LLM Building</h3>
+                        <p class="text-xs font-mono text-gray-400">DeepLearning.AI</p>
+                    </div>
+                    <div class="pt-3 border-t border-gray-800/80 flex justify-between items-center text-[11px] font-mono">
+                        <span class="text-purple-400">Issued Nov 2024</span>
+                        <span class="text-emerald-400"><i class="fa-solid fa-check-double"></i> Verified</span>
+                    </div>
+                </div>
+
+                <!-- Cert 2 -->
+                <div class="glass-card p-5 rounded-2xl border border-gray-800 flex flex-col justify-between space-y-4 hover:border-yellow-500/50 transition-all">
+                    <div class="space-y-2">
+                        <div class="w-10 h-10 rounded-lg bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center text-yellow-400 font-bold">
+                            <i class="fa-brands fa-aws"></i>
+                        </div>
+                        <h3 class="text-sm font-bold text-white">AWS Certified Developer – Associate</h3>
+                        <p class="text-xs font-mono text-gray-400">Amazon Web Services</p>
+                    </div>
+                    <div class="pt-3 border-t border-gray-800/80 flex justify-between items-center text-[11px] font-mono">
+                        <span class="text-yellow-400">Mar 2024 – 2027</span>
+                        <span class="text-emerald-400"><i class="fa-solid fa-check-double"></i> Verified</span>
+                    </div>
+                </div>
+
+                <!-- Cert 3 -->
+                <div class="glass-card p-5 rounded-2xl border border-gray-800 flex flex-col justify-between space-y-4 hover:border-blue-500/50 transition-all">
+                    <div class="space-y-2">
+                        <div class="w-10 h-10 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold">
+                            <i class="fa-brands fa-meta"></i>
+                        </div>
+                        <h3 class="text-sm font-bold text-white">Meta Back-End Developer Professional</h3>
+                        <p class="text-xs font-mono text-gray-400">Meta</p>
+                    </div>
+                    <div class="pt-3 border-t border-gray-800/80 flex justify-between items-center text-[11px] font-mono">
+                        <span class="text-blue-400">Issued Aug 2023</span>
+                        <span class="text-emerald-400"><i class="fa-solid fa-check-double"></i> Verified</span>
+                    </div>
+                </div>
+
+                <!-- Cert 4 -->
+                <div class="glass-card p-5 rounded-2xl border border-gray-800 flex flex-col justify-between space-y-4 hover:border-emerald-500/50 transition-all">
+                    <div class="space-y-2">
+                        <div class="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold">
+                            <i class="fa-brands fa-google"></i>
+                        </div>
+                        <h3 class="text-sm font-bold text-white">Google IT Automation with Python</h3>
+                        <p class="text-xs font-mono text-gray-400">Google</p>
+                    </div>
+                    <div class="pt-3 border-t border-gray-800/80 flex justify-between items-center text-[11px] font-mono">
+                        <span class="text-emerald-400">Issued May 2022</span>
+                        <span class="text-emerald-400"><i class="fa-solid fa-check-double"></i> Verified</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Direct Contact & Hire Section -->
+        <section id="contact" class="glass-card rounded-3xl p-8 sm:p-12 border border-gray-800 relative overflow-hidden">
+            <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="grid lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-7 space-y-4">
+                    <span class="text-xs font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-800/60 px-3 py-1 rounded-full inline-block">
+                        Ready for High-Impact Projects
+                    </span>
+                    <h2 class="text-2xl sm:text-4xl font-extrabold text-white leading-tight">
+                        Let's build your next <span class="text-gradient">AI platform, SaaS, or scraper pipeline</span>.
+                    </h2>
+                    <p class="text-xs sm:text-sm text-gray-400 leading-relaxed">
+                        Whether you need a full web application built from scratch, custom OpenAI/Claude AI features, or a high-volume data scraping pipeline, I deliver clean, production-grade code.
+                    </p>
+
+                    <div class="pt-4 flex flex-wrap gap-4 text-xs font-mono">
+                        <a href="https://www.upwork.com/freelancers/~01e7fd265d53547ef1?mp_source=share" target="_blank" rel="noopener" class="bg-emerald-500 hover:bg-emerald-400 text-black font-bold px-5 py-3 rounded-xl flex items-center gap-2 transition-all shadow-lg shadow-emerald-500/20">
+                            <i class="fa-solid fa-briefcase"></i> Invite on Upwork
+                        </a>
+                        <button onclick="copyEmail()" class="glass-card hover:bg-gray-800 text-gray-200 px-5 py-3 rounded-xl border border-gray-700 flex items-center gap-2 transition-all">
+                            <i class="fa-solid fa-envelope text-cyan-400"></i> Direct Email
+                        </button>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 bg-gray-900/90 rounded-2xl p-6 border border-gray-800 space-y-4 font-mono text-xs">
+                    <h3 class="text-sm font-bold text-white border-b border-gray-800 pb-2 flex items-center justify-between">
+                        <span>Direct Channels</span>
+                        <span class="text-[10px] text-emerald-400">🟢 Online</span>
+                    </h3>
+                    <div class="space-y-3 text-gray-300">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-envelope text-cyan-400 w-4"></i>
+                            <span class="text-gray-400">Email:</span>
+                            <span class="text-white select-all">kwangechi3@gmail.com</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-phone text-cyan-400 w-4"></i>
+                            <span class="text-gray-400">Phone:</span>
+                            <span class="text-white">+254 114 471989</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="fa-brands fa-github text-cyan-400 w-4"></i>
+                            <span class="text-gray-400">GitHub:</span>
+                            <a href="https://github.com/Wolfie3D" target="_blank" class="text-cyan-400 hover:underline">github.com/Wolfie3D</a>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="fa-brands fa-linkedin text-cyan-400 w-4"></i>
+                            <span class="text-gray-400">LinkedIn:</span>
+                            <a href="https://linkedin.com/in/chris-kamau" target="_blank" class="text-cyan-400 hover:underline">chris-kamau</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800/80 bg-brand-dark/90 py-8 text-xs font-mono text-gray-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+                © <span id="year">2026</span> Chris Wangeci (Wolfie3D). All rights reserved.
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="toggleTerminal()" class="hover:text-cyan-400 transition-colors">
+                    <i class="fa-solid fa-terminal mr-1"></i> Interactive CLI
+                </button>
+                <span>•</span>
+                <a href="https://github.com/Wolfie3D" target="_blank" class="hover:text-cyan-400 transition-colors">GitHub Profile</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Interactions & CLI Terminal -->
+    <script>
+        // Set dynamic year
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Toast Notification System
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            toastMsg.textContent = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Copy Email helper
+        function copyEmail() {
+            const email = 'kwangechi3@gmail.com';
+            const el = document.createElement('textarea');
+            el.value = email;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            showToast('Email address copied to clipboard!');
+        }
+
+        // Project Filtering
+        function filterProjects(category) {
+            const cards = document.querySelectorAll('.project-card');
+            const btns = document.querySelectorAll('.project-filter-btn');
+
+            btns.forEach(btn => {
+                btn.classList.remove('bg-cyan-500', 'text-black', 'font-bold');
+                btn.classList.add('bg-gray-800', 'text-gray-300');
+            });
+
+            event.currentTarget.classList.remove('bg-gray-800', 'text-gray-300');
+            event.currentTarget.classList.add('bg-cyan-500', 'text-black', 'font-bold');
+
+            cards.forEach(card => {
+                const cats = card.getAttribute('data-category');
+                if (category === 'all' || cats.includes(category)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Interactive CLI Terminal Modal Logic
+        const modal = document.getElementById('terminal-modal');
+        const termInput = document.getElementById('terminal-input');
+        const termHistory = document.getElementById('terminal-history');
+
+        function toggleTerminal() {
+            modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) {
+                termInput.focus();
+            }
+        }
+
+        // Keybindings for CMD/CTRL + K
+        window.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                toggleTerminal();
+            }
+            if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                toggleTerminal();
+            }
+        });
+
+        // Command Registry
+        const commands = {
+            'help': 'Available commands: whoami, skills, projects, certs, contact, cv, clear',
+            'whoami': 'Chris Wangeci (Wolfie3D) — Senior Software & AI Solutions Engineer based in Nairobi, KE.',
+            'skills': 'Backend: PHP (Laravel 12), Python (FastAPI/Django) | AI: OpenAI/Claude API, RAG | Scraping: Playwright, Selenium, Scrapy | Infra: AWS, Docker, WireGuard',
+            'projects': '1. Laravel AI Task Manager\n2. VPN Orchestration Platform\n3. High-Volume Python Web Scraper\n4. Enterprise CRM SaaS',
+            'certs': '• AWS Certified Developer - Associate\n• Generative AI for Developers (DeepLearning.AI)\n• Meta Back-End Developer\n• Google IT Automation with Python',
+            'contact': 'Email: kwangechi3@gmail.com | Phone: +254 114 471989 | GitHub: github.com/Wolfie3D',
+            'cv': 'Downloading/opening master resume profile...'
+        };
+
+        termInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const rawInput = termInput.value.trim();
+                const cmd = rawInput.toLowerCase();
+                
+                // Print command prompt
+                const cmdLine = document.createElement('div');
+                cmdLine.className = 'text-gray-300 font-bold';
+                cmdLine.innerHTML = `<span class="text-emerald-400">$</span> ${rawInput}`;
+                termHistory.appendChild(cmdLine);
+
+                if (cmd === 'clear') {
+                    termHistory.innerHTML = '';
+                } else if (cmd === 'cv') {
+                    const resLine = document.createElement('div');
+                    resLine.className = 'text-cyan-400 whitespace-pre-line';
+                    resLine.textContent = commands['cv'];
+                    termHistory.appendChild(resLine);
+                    window.open('https://github.com/Wolfie3D', '_blank');
+                } else if (commands[cmd]) {
+                    const resLine = document.createElement('div');
+                    resLine.className = 'text-cyan-300 whitespace-pre-line';
+                    resLine.textContent = commands[cmd];
+                    termHistory.appendChild(resLine);
+                } else if (cmd !== '') {
+                    const errLine = document.createElement('div');
+                    errLine.className = 'text-red-400';
+                    errLine.textContent = `Command not recognized: '${rawInput}'. Type 'help' for available commands.`;
+                    termHistory.appendChild(errLine);
+                }
+
+                termInput.value = '';
+                document.getElementById('terminal-body').scrollTop = document.getElementById('terminal-body').scrollHeight;
+            }
+        });
+    </script>
+</body>
+</html>
